@@ -20,14 +20,16 @@ namespace QL_ThuChi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ViNguoiDung>>> GetAll()
         {
-            return await _context.ViNguoiDungs
+            var list = await _context.ViNguoiDungs
                 .Include(vnd => vnd.Vi)
                 .Include(vnd => vnd.LoaiTien)
                 .Include(vnd => vnd.KhachHang)
                 .ToListAsync();
+
+            return Ok(list);
         }
 
-        // GET: api/ViNguoiDung/{MaNguoiDung}/{MaVi}/{TenTaiKhoan}
+        // GET: api/ViNguoiDung/{maNguoiDung}/{maVi}/{tenTaiKhoan}
         [HttpGet("{maNguoiDung}/{maVi}/{tenTaiKhoan}")]
         public async Task<ActionResult<ViNguoiDung>> GetById(string maNguoiDung, int maVi, string tenTaiKhoan)
         {
@@ -35,22 +37,29 @@ namespace QL_ThuChi.Controllers
                 .Include(vnd => vnd.Vi)
                 .Include(vnd => vnd.LoaiTien)
                 .Include(vnd => vnd.KhachHang)
-                .FirstOrDefaultAsync(vnd => vnd.MaNguoiDung == maNguoiDung
-                                        && vnd.MaVi == maVi
-                                        && vnd.TenTaiKhoan == tenTaiKhoan);
+                .FirstOrDefaultAsync(vnd =>
+                    vnd.MaNguoiDung == maNguoiDung &&
+                    vnd.MaVi == maVi &&
+                    vnd.TenTaiKhoan == tenTaiKhoan);
 
             if (viNguoiDung == null)
-            {
                 return NotFound();
-            }
 
-            return viNguoiDung;
+            return Ok(viNguoiDung);
         }
 
         // POST: api/ViNguoiDung
         [HttpPost]
         public async Task<ActionResult<ViNguoiDung>> Create(ViNguoiDung viNguoiDung)
         {
+            bool exists = await _context.ViNguoiDungs.AnyAsync(vnd =>
+                vnd.MaNguoiDung == viNguoiDung.MaNguoiDung &&
+                vnd.MaVi == viNguoiDung.MaVi &&
+                vnd.TenTaiKhoan == viNguoiDung.TenTaiKhoan);
+
+            if (exists)
+                return Conflict("Ví người dùng đã tồn tại với khóa chính này.");
+
             _context.ViNguoiDungs.Add(viNguoiDung);
             await _context.SaveChangesAsync();
 
@@ -62,14 +71,12 @@ namespace QL_ThuChi.Controllers
             }, viNguoiDung);
         }
 
-        // PUT: api/ViNguoiDung/{MaNguoiDung}/{MaVi}/{TenTaiKhoan}
+        // PUT: api/ViNguoiDung/{maNguoiDung}/{maVi}/{tenTaiKhoan}
         [HttpPut("{maNguoiDung}/{maVi}/{tenTaiKhoan}")]
         public async Task<IActionResult> Update(string maNguoiDung, int maVi, string tenTaiKhoan, ViNguoiDung viNguoiDung)
         {
             if (maNguoiDung != viNguoiDung.MaNguoiDung || maVi != viNguoiDung.MaVi || tenTaiKhoan != viNguoiDung.TenTaiKhoan)
-            {
-                return BadRequest();
-            }
+                return BadRequest("Khóa chính trong URL không khớp với dữ liệu gửi lên.");
 
             _context.Entry(viNguoiDung).State = EntityState.Modified;
 
@@ -79,27 +86,32 @@ namespace QL_ThuChi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                bool exists = _context.ViNguoiDungs.Any(vnd =>
-                    vnd.MaNguoiDung == maNguoiDung && vnd.MaVi == maVi && vnd.TenTaiKhoan == tenTaiKhoan);
+                bool exists = await _context.ViNguoiDungs.AnyAsync(vnd =>
+                    vnd.MaNguoiDung == maNguoiDung &&
+                    vnd.MaVi == maVi &&
+                    vnd.TenTaiKhoan == tenTaiKhoan);
+
                 if (!exists)
-                {
                     return NotFound();
-                }
+
                 throw;
             }
 
             return NoContent();
         }
 
-        // DELETE: api/ViNguoiDung/{MaNguoiDung}/{MaVi}/{TenTaiKhoan}
+        // DELETE: api/ViNguoiDung/{maNguoiDung}/{maVi}/{tenTaiKhoan}
         [HttpDelete("{maNguoiDung}/{maVi}/{tenTaiKhoan}")]
         public async Task<IActionResult> Delete(string maNguoiDung, int maVi, string tenTaiKhoan)
         {
-            var viNguoiDung = await _context.ViNguoiDungs.FindAsync(maNguoiDung, maVi, tenTaiKhoan);
+            var viNguoiDung = await _context.ViNguoiDungs
+                .FirstOrDefaultAsync(vnd =>
+                    vnd.MaNguoiDung == maNguoiDung &&
+                    vnd.MaVi == maVi &&
+                    vnd.TenTaiKhoan == tenTaiKhoan);
+
             if (viNguoiDung == null)
-            {
                 return NotFound();
-            }
 
             _context.ViNguoiDungs.Remove(viNguoiDung);
             await _context.SaveChangesAsync();
