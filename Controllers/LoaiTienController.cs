@@ -36,58 +36,5 @@ namespace QL_ThuChi.Controllers
 
             return loaiTien;
         }
-
-        // POST: api/LoaiTien
-        [HttpPost]
-        public async Task<ActionResult<LoaiTien>> Create(LoaiTien loaiTien)
-        {
-            _context.LoaiTiens.Add(loaiTien);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetById), new { id = loaiTien.MaLoai }, loaiTien);
-        }
-
-        // PUT: api/LoaiTien/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, LoaiTien loaiTien)
-        {
-            if (id != loaiTien.MaLoai)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(loaiTien).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.LoaiTiens.Any(e => e.MaLoai == id))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/LoaiTien/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var loaiTien = await _context.LoaiTiens.FindAsync(id);
-            if (loaiTien == null)
-            {
-                return NotFound();
-            }
-
-            _context.LoaiTiens.Remove(loaiTien);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
     }
 }

@@ -36,58 +36,5 @@ namespace QL_ThuChi.Controllers
 
             return vi;
         }
-
-        // POST: api/Vi
-        [HttpPost]
-        public async Task<ActionResult<Vi>> Create(Vi vi)
-        {
-            _context.Vi.Add(vi);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetById), new { id = vi.MaVi }, vi);
-        }
-
-        // PUT: api/Vi/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Vi vi)
-        {
-            if (id != vi.MaVi)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(vi).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Vi.Any(e => e.MaVi == id))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/Vi/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var vi = await _context.Vi.FindAsync(id);
-            if (vi == null)
-            {
-                return NotFound();
-            }
-
-            _context.Vi.Remove(vi);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
     }
 }
