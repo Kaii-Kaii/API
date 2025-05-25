@@ -7,56 +7,56 @@ namespace QL_ThuChi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ViController : ControllerBase
+    public class LoaiTienController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public ViController(AppDbContext context)
+        public LoaiTienController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Vi
+        // GET: api/LoaiTien
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Vi>>> GetAll()
+        public async Task<ActionResult<IEnumerable<LoaiTien>>> GetAll()
         {
-            return await _context.Vi.ToListAsync();
+            return await _context.LoaiTiens.ToListAsync();
         }
 
-        // GET: api/Vi/5
+        // GET: api/LoaiTien/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Vi>> GetById(int id)
+        public async Task<ActionResult<LoaiTien>> GetById(int id)
         {
-            var vi = await _context.Vi.FindAsync(id);
+            var loaiTien = await _context.LoaiTiens.FindAsync(id);
 
-            if (vi == null)
+            if (loaiTien == null)
             {
                 return NotFound();
             }
 
-            return vi;
+            return loaiTien;
         }
 
-        // POST: api/Vi
+        // POST: api/LoaiTien
         [HttpPost]
-        public async Task<ActionResult<Vi>> Create(Vi vi)
+        public async Task<ActionResult<LoaiTien>> Create(LoaiTien loaiTien)
         {
-            _context.Vi.Add(vi);
+            _context.LoaiTiens.Add(loaiTien);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = vi.MaVi }, vi);
+            return CreatedAtAction(nameof(GetById), new { id = loaiTien.MaLoai }, loaiTien);
         }
 
-        // PUT: api/Vi/5
+        // PUT: api/LoaiTien/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Vi vi)
+        public async Task<IActionResult> Update(int id, LoaiTien loaiTien)
         {
-            if (id != vi.MaVi)
+            if (id != loaiTien.MaLoai)
             {
                 return BadRequest();
             }
 
-            _context.Entry(vi).State = EntityState.Modified;
+            _context.Entry(loaiTien).State = EntityState.Modified;
 
             try
             {
@@ -64,7 +64,7 @@ namespace QL_ThuChi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Vi.Any(e => e.MaVi == id))
+                if (!_context.LoaiTiens.Any(e => e.MaLoai == id))
                 {
                     return NotFound();
                 }
@@ -74,17 +74,17 @@ namespace QL_ThuChi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Vi/5
+        // DELETE: api/LoaiTien/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var vi = await _context.Vi.FindAsync(id);
-            if (vi == null)
+            var loaiTien = await _context.LoaiTiens.FindAsync(id);
+            if (loaiTien == null)
             {
                 return NotFound();
             }
 
-            _context.Vi.Remove(vi);
+            _context.LoaiTiens.Remove(loaiTien);
             await _context.SaveChangesAsync();
 
             return NoContent();
