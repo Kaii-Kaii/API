@@ -48,26 +48,41 @@ namespace QL_ThuChi.Controllers
             return Ok(viNguoiDung);
         }
 
-        // POST: api/ViNguoiDung
         [HttpPost]
-        public async Task<ActionResult<ViNguoiDung>> Create(ViNguoiDung viNguoiDung)
+        public async Task<ActionResult<ViNguoiDung>> Create([FromBody] ViNguoiDungCreateDto dto)
         {
-            bool exists = await _context.ViNguoiDungs.AnyAsync(vnd =>
-                vnd.MaNguoiDung == viNguoiDung.MaNguoiDung &&
-                vnd.MaVi == viNguoiDung.MaVi &&
-                vnd.TenTaiKhoan == viNguoiDung.TenTaiKhoan);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            if (exists)
-                return Conflict("Ví người dùng đã tồn tại với khóa chính này.");
+            var vi = await _context.Vi.FindAsync(dto.MaVi);
+            var loaiTien = await _context.LoaiTiens.FindAsync(dto.MaLoaiTien);
+
+            // PadRight 20 ký tự cho MaNguoiDung để phù hợp với database
+            string maNguoiDungDb = dto.MaNguoiDung.PadRight(20);
+
+            var khachHang = await _context.KhachHangs.FindAsync(maNguoiDungDb);
+
+            if (vi == null || loaiTien == null || khachHang == null)
+                return BadRequest("MaVi, MaLoaiTien hoặc MaNguoiDung không tồn tại.");
+
+            var viNguoiDung = new ViNguoiDung
+            {
+                MaNguoiDung = maNguoiDungDb,  // lưu luôn bản đã PadRight
+                MaVi = dto.MaVi,
+                TenTaiKhoan = dto.TenTaiKhoan,
+                MaLoaiTien = dto.MaLoaiTien,
+                DienGiai = dto.DienGiai,
+                SoDu = dto.SoDu
+            };
 
             _context.ViNguoiDungs.Add(viNguoiDung);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new
             {
-                maNguoiDung = viNguoiDung.MaNguoiDung,
-                maVi = viNguoiDung.MaVi,
-                tenTaiKhoan = viNguoiDung.TenTaiKhoan
+                maNguoiDung = maNguoiDungDb,
+                maVi = dto.MaVi,
+                tenTaiKhoan = dto.TenTaiKhoan
             }, viNguoiDung);
         }
 
