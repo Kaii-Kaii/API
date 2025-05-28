@@ -13,10 +13,9 @@ namespace QL_ThuChi.Data
         public DbSet<QuyenTruyCap> QuyenTruyCaps { get; set; }
         public DbSet<TaiKhoan> TaiKhoans { get; set; }
         public DbSet<KhachHang> KhachHangs { get; set; }
-        public DbSet<Vi> Vi { get; set; }
+        public DbSet<Vi> Vi { get; set; } 
         public DbSet<LoaiTien> LoaiTiens { get; set; }
         public DbSet<ViNguoiDung> ViNguoiDungs { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,13 +31,6 @@ namespace QL_ThuChi.Data
             modelBuilder.Entity<ViNguoiDung>()
                 .HasKey(vnd => new { vnd.MaNguoiDung, vnd.MaVi, vnd.TenTaiKhoan });
         }
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-
-        //    // Tùy chỉnh nếu cần
-        //}
     }
 
 }

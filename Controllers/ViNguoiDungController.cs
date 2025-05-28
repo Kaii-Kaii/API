@@ -48,57 +48,53 @@ namespace QL_ThuChi.Controllers
             return Ok(viNguoiDung);
         }
 
-        // POST: api/ViNguoiDung
-        [HttpPost]
-        public async Task<ActionResult<ViNguoiDung>> Create(ViNguoiDung viNguoiDung)
-        {
-            bool exists = await _context.ViNguoiDungs.AnyAsync(vnd =>
-                vnd.MaNguoiDung == viNguoiDung.MaNguoiDung &&
-                vnd.MaVi == viNguoiDung.MaVi &&
-                vnd.TenTaiKhoan == viNguoiDung.TenTaiKhoan);
-
-            if (exists)
-                return Conflict("Ví người dùng đã tồn tại với khóa chính này.");
-
-            _context.ViNguoiDungs.Add(viNguoiDung);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetById), new
-            {
-                maNguoiDung = viNguoiDung.MaNguoiDung,
-                maVi = viNguoiDung.MaVi,
-                tenTaiKhoan = viNguoiDung.TenTaiKhoan
-            }, viNguoiDung);
-        }
 
         // PUT: api/ViNguoiDung/{maNguoiDung}/{maVi}/{tenTaiKhoan}
         [HttpPut("{maNguoiDung}/{maVi}/{tenTaiKhoan}")]
-        public async Task<IActionResult> Update(string maNguoiDung, int maVi, string tenTaiKhoan, ViNguoiDung viNguoiDung)
-        {
-            if (maNguoiDung != viNguoiDung.MaNguoiDung || maVi != viNguoiDung.MaVi || tenTaiKhoan != viNguoiDung.TenTaiKhoan)
-                return BadRequest("Khóa chính trong URL không khớp với dữ liệu gửi lên.");
-
-            _context.Entry(viNguoiDung).State = EntityState.Modified;
-
-            try
+        public async Task<IActionResult> CapNhatViNguoiDung(
+        string maNguoiDung, int maVi, string tenTaiKhoan,
+        [FromBody] ViNguoiDungUpdateDto dto)
             {
-                await _context.SaveChangesAsync();
+                // Tìm bản ghi cũ theo khóa chính
+                var viCu = await _context.ViNguoiDungs
+                    .FirstOrDefaultAsync(v =>
+                        v.MaNguoiDung.Trim() == maNguoiDung.Trim() &&
+                        v.MaVi == maVi &&
+                        v.TenTaiKhoan == tenTaiKhoan);
+
+                if (viCu == null)
+                    return NotFound("Ví không tồn tại.");
+
+                // Xóa bản ghi cũ
+                _context.ViNguoiDungs.Remove(viCu);
+
+                // Tạo bản ghi mới với dữ liệu cập nhật, đặc biệt TenTaiKhoan mới
+                var viMoi = new ViNguoiDung
+                {
+                    MaNguoiDung = viCu.MaNguoiDung,
+                    MaVi = viCu.MaVi,
+                    MaLoaiTien = dto.MaLoaiTien,
+                    TenTaiKhoan = dto.TenTaiKhoan,
+                    DienGiai = dto.DienGiai,
+                    SoDu = dto.SoDu
+                };
+
+                // Thêm bản ghi mới
+                _context.ViNguoiDungs.Add(viMoi);
+
+                // Lưu thay đổi
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    // Xử lý lỗi nếu có (ví dụ trùng khóa chính)
+                    return BadRequest(new { message = ex.Message });
+                }
+
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                bool exists = await _context.ViNguoiDungs.AnyAsync(vnd =>
-                    vnd.MaNguoiDung == maNguoiDung &&
-                    vnd.MaVi == maVi &&
-                    vnd.TenTaiKhoan == tenTaiKhoan);
-
-                if (!exists)
-                    return NotFound();
-
-                throw;
-            }
-
-            return NoContent();
-        }
 
         // DELETE: api/ViNguoiDung/{maNguoiDung}/{maVi}/{tenTaiKhoan}
         [HttpDelete("{maNguoiDung}/{maVi}/{tenTaiKhoan}")]
