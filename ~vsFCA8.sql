@@ -54,7 +54,6 @@ DELETE FROM TaiKhoan WHERE MATAIKHOAN = 'tk0003              ';
 
 SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'TaiKhoan';
 
--- update lần 2--
 CREATE TABLE Vi (
     MaVi INT PRIMARY KEY IDENTITY(1,1), -- Mã ví tự tăng
     TenVi NVARCHAR(100) NOT NULL,       -- Tên ví (vd: Tiền mặt, Ngân hàng...)
@@ -118,8 +117,6 @@ INSERT INTO ViNguoiDung (MaNguoiDung, MaVi, MaLoaiTien, TenTaiKhoan, DienGiai, S
 						('KH0002              ',		3,		1,		N'Thẻ tín dụng Techcombank', N'Thẻ tín dụng chính', 0),
 						('KH0002              ',		5,		1,		N'Ví điện tử Momo', N'Ví điện tử sử dụng thường xuyên', 1200000),
 						('KH0002              ',		1,		1,		N'Ví Tiền Mặt', N' ', 0);
-
-
 -- update lần 3--
 
 -- Bảng Loại
