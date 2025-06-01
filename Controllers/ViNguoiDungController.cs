@@ -114,5 +114,37 @@ namespace QL_ThuChi.Controllers
 
             return NoContent();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ViNguoiDungCreateDto dto)
+        {
+            var exists = await _context.ViNguoiDungs.AnyAsync(v =>
+                v.MaNguoiDung == dto.MaNguoiDung &&
+                v.MaVi == dto.MaVi &&
+                v.TenTaiKhoan == dto.TenTaiKhoan);
+
+            if (exists)
+                return BadRequest(new { message = "Ví đã tồn tại." });
+
+            var model = new ViNguoiDung
+            {
+                MaNguoiDung = dto.MaNguoiDung,
+                MaVi = dto.MaVi,
+                TenTaiKhoan = dto.TenTaiKhoan,
+                MaLoaiTien = dto.MaLoaiTien,
+                DienGiai = dto.DienGiai,
+                SoDu = dto.SoDu
+            };
+
+            _context.ViNguoiDungs.Add(model);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new
+            {
+                maNguoiDung = model.MaNguoiDung,
+                maVi = model.MaVi,
+                tenTaiKhoan = model.TenTaiKhoan
+            }, model);
+        }
     }
 }

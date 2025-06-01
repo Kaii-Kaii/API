@@ -17,6 +17,8 @@ namespace QL_ThuChi.Data
         public DbSet<LoaiTien> LoaiTiens { get; set; }
         public DbSet<ViNguoiDung> ViNguoiDungs { get; set; }
 
+        public DbSet<HangMuc> HangMucs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -30,6 +32,7 @@ namespace QL_ThuChi.Data
 
             modelBuilder.Entity<ViNguoiDung>()
                 .HasKey(vnd => new { vnd.MaNguoiDung, vnd.MaVi, vnd.TenTaiKhoan });
+            modelBuilder.Entity<HangMuc>().ToTable("HangMuc");
         }
     }
 
