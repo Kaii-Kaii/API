@@ -133,6 +133,9 @@ namespace QL_ThuChi.Controllers
             }
 
             return viNguoiDung;
+        }
+
+        // POST: api/ViNguoiDung
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ViNguoiDungCreateDto dto)
         {
