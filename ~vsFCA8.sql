@@ -242,4 +242,3 @@ INSERT INTO LichSuGiaoDich (MaGiaoDich, HanhDong, SoTienCu, SoTienMoi, ThucHienB
 (6, 'TaoMoi', NULL, 12000000, 'KH0002', '2024-03-01 09:00:00'),
 (7, 'TaoMoi', NULL, 30000, 'KH0002', '2024-03-02 08:15:00'),
 (8, 'TaoMoi', NULL, 150000, 'KH0002', '2024-03-03 14:30:00');
-
