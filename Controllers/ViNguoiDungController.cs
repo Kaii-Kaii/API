@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using QL_ThuChi.Data;
 using QL_ThuChi.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace QL_ThuChi.Controllers
 {
@@ -54,47 +56,47 @@ namespace QL_ThuChi.Controllers
         public async Task<IActionResult> CapNhatViNguoiDung(
         string maNguoiDung, int maVi, string tenTaiKhoan,
         [FromBody] ViNguoiDungUpdateDto dto)
+        {
+            // Tìm bản ghi cũ theo khóa chính
+            var viCu = await _context.ViNguoiDungs
+                .FirstOrDefaultAsync(v =>
+                    v.MaNguoiDung.Trim() == maNguoiDung.Trim() &&
+                    v.MaVi == maVi &&
+                    v.TenTaiKhoan == tenTaiKhoan);
+
+            if (viCu == null)
+                return NotFound("Ví không tồn tại.");
+
+            // Xóa bản ghi cũ
+            _context.ViNguoiDungs.Remove(viCu);
+
+            // Tạo bản ghi mới với dữ liệu cập nhật, đặc biệt TenTaiKhoan mới
+            var viMoi = new ViNguoiDung
             {
-                // Tìm bản ghi cũ theo khóa chính
-                var viCu = await _context.ViNguoiDungs
-                    .FirstOrDefaultAsync(v =>
-                        v.MaNguoiDung.Trim() == maNguoiDung.Trim() &&
-                        v.MaVi == maVi &&
-                        v.TenTaiKhoan == tenTaiKhoan);
+                MaNguoiDung = viCu.MaNguoiDung,
+                MaVi = viCu.MaVi,
+                MaLoaiTien = dto.MaLoaiTien,
+                TenTaiKhoan = dto.TenTaiKhoan,
+                DienGiai = dto.DienGiai,
+                SoDu = dto.SoDu
+            };
 
-                if (viCu == null)
-                    return NotFound("Ví không tồn tại.");
+            // Thêm bản ghi mới
+            _context.ViNguoiDungs.Add(viMoi);
 
-                // Xóa bản ghi cũ
-                _context.ViNguoiDungs.Remove(viCu);
-
-                // Tạo bản ghi mới với dữ liệu cập nhật, đặc biệt TenTaiKhoan mới
-                var viMoi = new ViNguoiDung
-                {
-                    MaNguoiDung = viCu.MaNguoiDung,
-                    MaVi = viCu.MaVi,
-                    MaLoaiTien = dto.MaLoaiTien,
-                    TenTaiKhoan = dto.TenTaiKhoan,
-                    DienGiai = dto.DienGiai,
-                    SoDu = dto.SoDu
-                };
-
-                // Thêm bản ghi mới
-                _context.ViNguoiDungs.Add(viMoi);
-
-                // Lưu thay đổi
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException ex)
-                {
-                    // Xử lý lỗi nếu có (ví dụ trùng khóa chính)
-                    return BadRequest(new { message = ex.Message });
-                }
-
-                return NoContent();
+            // Lưu thay đổi
+            try
+            {
+                await _context.SaveChangesAsync();
             }
+            catch (DbUpdateException ex)
+            {
+                // Xử lý lỗi nếu có (ví dụ trùng khóa chính)
+                return BadRequest(new { message = ex.Message });
+            }
+
+            return NoContent();
+        }
 
         // DELETE: api/ViNguoiDung/{maNguoiDung}/{maVi}/{tenTaiKhoan}
         [HttpDelete("{maNguoiDung}/{maVi}/{tenTaiKhoan}")]
@@ -113,6 +115,24 @@ namespace QL_ThuChi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/ViNguoiDung/khachhang/{maKH}
+        [HttpGet("khachhang/{maKH}")]
+        public async Task<ActionResult<IEnumerable<ViNguoiDung>>> GetViByMaKH(string maKH)
+        {
+            var viNguoiDung = await _context.ViNguoiDungs
+                .Include(v => v.Vi)
+                .Include(v => v.LoaiTien)
+                .Where(v => v.MaNguoiDung == maKH)
+                .ToListAsync();
+
+            if (viNguoiDung == null || !viNguoiDung.Any())
+            {
+                return NotFound($"Không tìm thấy ví nào cho khách hàng có mã {maKH}");
+            }
+
+            return viNguoiDung;
         }
     }
 }
