@@ -56,19 +56,30 @@ namespace QL_ThuChi.Controllers
 
         // POST: api/AnhHoaDon
         [HttpPost]
-        public async Task<ActionResult<AnhHoaDon>> CreateAnhHoaDon(AnhHoaDon anhHoaDon)
+        public async Task<ActionResult<AnhHoaDonDto>> CreateAnhHoaDon(AnhHoaDonDto dto)
         {
-            // Validate GiaoDich exists
-            var giaoDich = await _context.GiaoDichs.FindAsync(anhHoaDon.MaGiaoDich);
+            // Kiểm tra giao dịch tồn tại
+            var giaoDich = await _context.GiaoDichs.FindAsync(dto.MaGiaoDich);
             if (giaoDich == null)
             {
                 return BadRequest("Không tìm thấy giao dịch");
             }
 
+            var anhHoaDon = new AnhHoaDon
+            {
+                MaGiaoDich = dto.MaGiaoDich,
+                DuongDanAnh = dto.DuongDanAnh,
+                NgayTaiLen = DateTime.Now
+            };
+
             _context.AnhHoaDons.Add(anhHoaDon);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetAnhHoaDon), new { id = anhHoaDon.MaAnh }, anhHoaDon);
+            return Ok(new AnhHoaDonDto
+            {
+                MaGiaoDich = anhHoaDon.MaGiaoDich,
+                DuongDanAnh = anhHoaDon.DuongDanAnh
+            });
         }
 
         // PUT: api/AnhHoaDon/5
