@@ -243,3 +243,22 @@ INSERT INTO LichSuGiaoDich (MaGiaoDich, HanhDong, SoTienCu, SoTienMoi, ThucHienB
 (7, 'TaoMoi', NULL, 30000, 'KH0002', '2024-03-02 08:15:00'),
 (8, 'TaoMoi', NULL, 150000, 'KH0002', '2024-03-03 14:30:00');
 
+
+-- lần 4
+CREATE TABLE HangMuc (
+    MAHANGMUC NVARCHAR(20) PRIMARY KEY,
+    TENHANGMUC NVARCHAR(100) NULL,
+    ICON NVARCHAR(100) NULL,
+    LOAI NVARCHAR(20) NULL,
+    HAYDUNG BIT NULL,
+    MAKH CHAR(20) NOT NULL,
+    CONSTRAINT FK_HangMuc_KhachHang FOREIGN KEY (MAKH)
+        REFERENCES KhachHang(MAKH)
+);
+
+INSERT INTO HangMuc (MAHANGMUC, TENHANGMUC, ICON, LOAI, HAYDUNG, MAKH)
+VALUES 
+('HM0002', N'Lương', N'luong_icon', N'thu', 1, 'KH0001'),
+('HM0009', N'ăn uống', N'thu', N'thu', 0, 'KH0001'),
+('HM0011', N'll', N'briefcase', N'chi', 0, 'KH0001'),
+('HM0012', N'kk', N'dog', N'chi', 0, 'KH0001');
