@@ -23,6 +23,8 @@ namespace QL_ThuChi.Data
         public DbSet<AnhHoaDon> AnhHoaDons { get; set; }
         public DbSet<LichSuGiaoDich> LichSuGiaoDichs { get; set; }
 
+        public DbSet<HangMuc> HangMucs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -39,6 +41,7 @@ namespace QL_ThuChi.Data
             modelBuilder.Entity<Loai>().ToTable("Loai");
             modelBuilder.Entity<AnhHoaDon>().ToTable("AnhHoaDon");
             modelBuilder.Entity<LichSuGiaoDich>().ToTable("LichSuGiaoDich");
+            modelBuilder.Entity<HangMuc>().ToTable("HangMuc");
 
             modelBuilder.Entity<ViNguoiDung>()
                 .HasKey(vnd => new { vnd.MaNguoiDung, vnd.MaVi, vnd.TenTaiKhoan });
