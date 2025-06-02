@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Metrics;
 
 namespace QL_ThuChi.Models
 {
@@ -22,6 +23,12 @@ namespace QL_ThuChi.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal? SoTienHienTai { get; set; }
+
+        //ALTER TABLE DanhMucNguoiDung
+        //ADD ThuChi NVARCHAR(10);  -- hoặc CHAR(3) nếu chỉ dùng 'Thu'/'Chi'
+        [Required]
+        [StringLength(10)]
+        public string ThuChi { get; set; } // 'Thu' hoặc 'Chi'
 
         // Navigation properties
         [ForeignKey("MaNguoiDung")]

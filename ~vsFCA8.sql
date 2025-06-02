@@ -262,3 +262,21 @@ VALUES
 ('HM0009', N'ăn uống', N'thu', N'thu', 0, 'KH0001'),
 ('HM0011', N'll', N'briefcase', N'chi', 0, 'KH0001'),
 ('HM0012', N'kk', N'dog', N'chi', 0, 'KH0001');
+
+
+
+
+ALTER TABLE DanhMucNguoiDung
+ADD ThuChi NVARCHAR(10);  -- hoặc CHAR(3) nếu chỉ dùng 'Thu'/'Chi'
+
+UPDATE DanhMucNguoiDung
+SET ThuChi = 'Thu'	
+WHERE TenDanhMucNguoiDung LIKE N'%Lương%';
+
+UPDATE DanhMucNguoiDung
+SET ThuChi = 'Chi'
+WHERE ThuChi IS NULL;
+
+
+INSERT INTO DanhMucNguoiDung (MaDanhMucNguoiDung, MaNguoiDung, TenDanhMucNguoiDung, ToiDa, SoTienHienTai, ThuChi) VALUES
+(3, 'KH0003', N'An Nan Xam Hoi', 15000000, 15000000, 'Chi')
