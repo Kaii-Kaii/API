@@ -134,6 +134,8 @@ namespace QL_ThuChi.Controllers
             return NoContent();
         }
 
+        // POST 
+
         private bool DanhMucNguoiDungExists(int id)
         {
             return _context.DanhMucNguoiDungs.Any(e => e.MaDanhMucNguoiDung == id);
