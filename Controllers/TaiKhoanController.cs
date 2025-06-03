@@ -110,17 +110,28 @@ namespace QL_ThuChi.Controllers
         public async Task<IActionResult> ConfirmEmail([FromQuery] string token)
         {
             if (string.IsNullOrEmpty(token))
-                return BadRequest("Token không hợp lệ.");
+                return Content("<h2 style='color:#03A9F4;text-align:center;margin-top:40px'>Token không hợp lệ.</h2>", "text/html; charset=utf-8");
 
             var user = await _context.TaiKhoans.FirstOrDefaultAsync(u => u.EMAILCONFIRMATIONTOKEN == token);
             if (user == null)
-                return NotFound("Token không hợp lệ hoặc đã được xác thực.");
+                return Content("<h2 style='color:#03A9F4;text-align:center;margin-top:40px'>Token không hợp lệ hoặc đã xác thực.</h2>", "text/html; charset=utf-8");
 
             user.ISEMAILCONFIRMED = 1;
             user.EMAILCONFIRMATIONTOKEN = null;
             await _context.SaveChangesAsync();
 
-            return Ok("Xác thực email thành công! Bạn có thể đăng nhập.");
+            string html = @"
+<body style='background:#f5f6fa;'>
+  <div style='max-width:400px;margin:60px auto;padding:32px 24px;background:#fff;border-radius:12px;box-shadow:0 2px 12px #0001;text-align:center'>
+    <svg width='60' height='60' viewBox='0 0 24 24' fill='none' style='margin-bottom:16px'>
+      <circle cx='12' cy='12' r='12' fill='#03A9F4'/>
+      <path d='M7 13l3 3 7-7' stroke='#fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+    </svg>
+    <h2 style='color:#03A9F4'>Đã xác thực email thành công!</h2>
+  </div>
+</body>
+";
+            return Content(html, "text/html; charset=utf-8");
         }
         private string GenerateAccountCode()
         {
