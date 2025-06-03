@@ -28,7 +28,7 @@ namespace QL_ThuChi.Controllers
                 .Include(g => g.KhachHang)
                 .Include(g => g.Vi)
                 .Include(g => g.ViNhan)
-                .Include(g => g.DanhMucNguoiDung)
+                .Include(g => g.HangMuc)
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace QL_ThuChi.Controllers
                 .Include(g => g.KhachHang)
                 .Include(g => g.Vi)
                 .Include(g => g.ViNhan)
-                .Include(g => g.DanhMucNguoiDung)
+                .Include(g => g.HangMuc)
                 .FirstOrDefaultAsync(g => g.MaGiaoDich == id);
 
             if (giaoDich == null)
@@ -59,7 +59,7 @@ namespace QL_ThuChi.Controllers
                 .Include(g => g.KhachHang)
                 .Include(g => g.Vi)
                 .Include(g => g.ViNhan)
-                .Include(g => g.DanhMucNguoiDung)
+                .Include(g => g.HangMuc)
                 .Where(g => g.MaNguoiDung == maNguoiDung)
                 .ToListAsync();
         }
@@ -85,10 +85,10 @@ namespace QL_ThuChi.Controllers
             }
 
             // Validate category if provided
-            if (giaoDichDto.MaDanhMucNguoiDung.HasValue)
+            if (!string.IsNullOrEmpty(giaoDichDto.MAHANGMUC))
             {
-                var danhMuc = await _context.DanhMucNguoiDungs
-                    .FirstOrDefaultAsync(d => d.MaDanhMucNguoiDung == giaoDichDto.MaDanhMucNguoiDung &&
+                var danhMuc = await _context.HangMucs
+                    .FirstOrDefaultAsync(d => d.MAHANGMUC == giaoDichDto.MAHANGMUC &&
                                            d.MaNguoiDung == giaoDichDto.MaNguoiDung);
                 if (danhMuc == null)
                 {
@@ -127,7 +127,7 @@ namespace QL_ThuChi.Controllers
             {
                 MaNguoiDung = giaoDichDto.MaNguoiDung,
                 MaVi = giaoDichDto.MaVi,
-                MaDanhMucNguoiDung = giaoDichDto.MaDanhMucNguoiDung,
+                MaHangMuc = giaoDichDto.MAHANGMUC,
                 SoTien = giaoDichDto.SoTien,
                 GhiChu = giaoDichDto.GhiChu,
                 NgayGiaoDich = giaoDichDto.NgayGiaoDich,
@@ -214,7 +214,7 @@ namespace QL_ThuChi.Controllers
 
             // Apply the new transaction
             if (giaoDichDto.MaVi.HasValue) giaoDich.MaVi = giaoDichDto.MaVi.Value;
-            if (giaoDichDto.MaDanhMucNguoiDung.HasValue) giaoDich.MaDanhMucNguoiDung = giaoDichDto.MaDanhMucNguoiDung;
+            if (!string.IsNullOrEmpty(giaoDichDto.MAHANGMUC)) giaoDich.MaHangMuc = giaoDichDto.MAHANGMUC;
             if (giaoDichDto.SoTien.HasValue) giaoDich.SoTien = giaoDichDto.SoTien.Value;
             if (giaoDichDto.GhiChu != null) giaoDich.GhiChu = giaoDichDto.GhiChu;
             if (giaoDichDto.NgayGiaoDich.HasValue) giaoDich.NgayGiaoDich = giaoDichDto.NgayGiaoDich.Value;
@@ -277,7 +277,7 @@ namespace QL_ThuChi.Controllers
                 .Include(g => g.KhachHang)
                 .Include(g => g.Vi)
                 .Include(g => g.ViNhan)
-                .Include(g => g.DanhMucNguoiDung)
+                .Include(g => g.HangMuc)
                 .FirstOrDefaultAsync(g => g.MaGiaoDich == id);
 
             return Ok(new

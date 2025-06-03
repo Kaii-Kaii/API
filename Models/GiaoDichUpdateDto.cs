@@ -7,7 +7,7 @@ namespace QL_ThuChi.Models
     public class GiaoDichUpdateDto
     {
         public int? MaVi { get; set; }
-        public int? MaDanhMucNguoiDung { get; set; }
+        public string? MAHANGMUC { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Số tiền phải lớn hơn 0")]
         [Column(TypeName = "decimal(18,2)")]

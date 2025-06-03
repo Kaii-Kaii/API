@@ -17,9 +17,6 @@ namespace QL_ThuChi.Data
         public DbSet<LoaiTien> LoaiTiens { get; set; }
         public DbSet<ViNguoiDung> ViNguoiDungs { get; set; }
         public DbSet<GiaoDich> GiaoDichs { get; set; }
-        public DbSet<DanhMuc> DanhMucs { get; set; }
-        public DbSet<DanhMucNguoiDung> DanhMucNguoiDungs { get; set; }
-        public DbSet<Loai> Loais { get; set; }
         public DbSet<AnhHoaDon> AnhHoaDons { get; set; }
         public DbSet<LichSuGiaoDich> LichSuGiaoDichs { get; set; }
 
@@ -36,9 +33,6 @@ namespace QL_ThuChi.Data
             modelBuilder.Entity<LoaiTien>().ToTable("LoaiTien");
             modelBuilder.Entity<ViNguoiDung>().ToTable("ViNguoiDung");
             modelBuilder.Entity<GiaoDich>().ToTable("GiaoDich");
-            modelBuilder.Entity<DanhMuc>().ToTable("DanhMuc");
-            modelBuilder.Entity<DanhMucNguoiDung>().ToTable("DanhMucNguoiDung");
-            modelBuilder.Entity<Loai>().ToTable("Loai");
             modelBuilder.Entity<AnhHoaDon>().ToTable("AnhHoaDon");
             modelBuilder.Entity<LichSuGiaoDich>().ToTable("LichSuGiaoDich");
             modelBuilder.Entity<HangMuc>().ToTable("HangMuc");
@@ -46,8 +40,8 @@ namespace QL_ThuChi.Data
             modelBuilder.Entity<ViNguoiDung>()
                 .HasKey(vnd => new { vnd.MaNguoiDung, vnd.MaVi, vnd.TenTaiKhoan });
 
-            modelBuilder.Entity<DanhMucNguoiDung>()
-                .HasKey(dm => new { dm.MaDanhMucNguoiDung, dm.MaNguoiDung });
+            //modelBuilder.Entity<DanhMucNguoiDung>()
+            //    .HasKey(dm => new { dm.MaDanhMucNguoiDung, dm.MaNguoiDung });
 
             modelBuilder.Entity<GiaoDich>()
                 .HasOne(g => g.KhachHang)
@@ -67,17 +61,22 @@ namespace QL_ThuChi.Data
                 .HasForeignKey(g => g.MaViNhan)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<DanhMucNguoiDung>()
-                .HasOne(dm => dm.KhachHang)
-                .WithMany()
-                .HasForeignKey(dm => dm.MaNguoiDung)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<DanhMucNguoiDung>()
+            //    .HasOne(dm => dm.KhachHang)
+            //    .WithMany()
+            //    .HasForeignKey(dm => dm.MaNguoiDung)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<DanhMuc>()
-                .HasOne(dm => dm.Loai)
-                .WithMany()
-                .HasForeignKey(dm => dm.MaLoaiDanhMuc)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<DanhMuc>()
+            //    .HasOne(dm => dm.Loai)
+            //    .WithMany()
+            //    .HasForeignKey(dm => dm.MaLoaiDanhMuc)
+            //    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<HangMuc>()
+    .HasKey(h => new { h.MAHANGMUC, h.MaNguoiDung });
+
+
 
             modelBuilder.Entity<AnhHoaDon>()
                 .HasOne(a => a.GiaoDich)
@@ -96,6 +95,13 @@ namespace QL_ThuChi.Data
                 .WithMany()
                 .HasForeignKey(l => l.ThucHienBoi)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<GiaoDich>()
+                .HasOne(g => g.HangMuc)
+                .WithMany()
+                .HasForeignKey(g => new { g.MaHangMuc, g.MaNguoiDung })
+                .HasPrincipalKey(h => new { h.MAHANGMUC, h.MaNguoiDung })
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 
