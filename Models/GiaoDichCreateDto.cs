@@ -13,7 +13,7 @@ namespace QL_ThuChi.Models
         [Required(ErrorMessage = "Mã ví không được để trống")]
         public int MaVi { get; set; }
 
-        public int? MaDanhMucNguoiDung { get; set; }
+        public string? MAHANGMUC { get; set; }
 
         [Required(ErrorMessage = "Số tiền không được để trống")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Số tiền phải lớn hơn 0")]

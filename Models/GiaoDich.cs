@@ -16,7 +16,7 @@ namespace QL_ThuChi.Models
         [Required]
         public int MaVi { get; set; }
 
-        public int? MaDanhMucNguoiDung { get; set; }
+        public string? MaHangMuc { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
@@ -49,8 +49,8 @@ namespace QL_ThuChi.Models
         [ForeignKey("MaVi")]
         public Vi Vi { get; set; }
 
-        [ForeignKey("MaDanhMucNguoiDung, MaNguoiDung")]
-        public DanhMucNguoiDung DanhMucNguoiDung { get; set; }
+        [ForeignKey("MaHangMuc")]
+        public HangMuc HangMuc { get; set; }
 
         [ForeignKey("MaViNhan")]
         public Vi ViNhan { get; set; }

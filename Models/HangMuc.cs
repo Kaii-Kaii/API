@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QL_ThuChi.Models
 {
@@ -8,18 +7,13 @@ namespace QL_ThuChi.Models
         [Key]
         public string MAHANGMUC { get; set; }
 
-        public string MAKH { get; set; }
-
-        [ForeignKey("MAKH")]
+        public string MaNguoiDung { get; set; } // Đúng tên cột trong DB
 
         public string TENHANGMUC { get; set; }
-
-        public string? ICON { get; set; } // Đường dẫn hoặc tên icon, có thể null
-
-        public string LOAI { get; set; } // 'chi', 'thu', 'vayno',...
-
-        public bool HAYDUNG { get; set; } // true nếu là mục hay dùng
-
-
+        public string? ICON { get; set; }
+        public string LOAI { get; set; }
+        public bool HAYDUNG { get; set; }
+        public decimal? sotienhientai { get; set; }
+        public decimal? toida { get; set; }
     }
 }
