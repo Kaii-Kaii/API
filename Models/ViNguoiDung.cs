@@ -19,6 +19,7 @@ namespace QL_ThuChi.Models
         public string? DienGiai { get; set; }
 
         public decimal SoDu { get; set; }
+        public decimal? SoDuKhac { get; set; }
 
         // Navigation properties
         [ForeignKey("MaVi")]
